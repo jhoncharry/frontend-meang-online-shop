@@ -1,19 +1,11 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-import { AdminRoutingModule } from './admin-routing.module';
 import { AdminComponent } from './admin.component';
-import { TitleComponent } from '../core/components/title/title.component';
-import { HeaderComponent } from '../core/components/header/header.component';
-import { SidebarComponent } from '../core/components/sidebar/sidebar.component';
+import { SharedModule } from '../core/components/shared.module';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
-  declarations: [
-    AdminComponent,
-    TitleComponent,
-    HeaderComponent,
-    SidebarComponent,
-  ],
-  imports: [CommonModule, AdminRoutingModule],
+  declarations: [AdminComponent],
+  imports: [CommonModule, SharedModule, RouterModule],
 })
 export class AdminModule {}

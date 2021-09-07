@@ -1,9 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AdminRoutingModule } from './@admin/pages/admin-routing.module';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'home', pathMatch: 'full' },
-  { path: '**', redirectTo: 'home', pathMatch: 'full' },
+  // path: '/admin' AdminRouting
+  { path: '', redirectTo: 'admin', pathMatch: 'full' },
+  { path: '**', redirectTo: 'admin', pathMatch: 'full' },
 ];
 
 @NgModule({
@@ -12,6 +14,7 @@ const routes: Routes = [
       useHash: true,
       scrollPositionRestoration: 'enabled',
     }),
+    AdminRoutingModule,
   ],
   exports: [RouterModule],
 })
