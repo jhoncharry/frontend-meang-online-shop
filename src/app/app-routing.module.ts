@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { AdminRoutingModule } from './@admin/pages/admin-routing.module';
 
 const routes: Routes = [
-  // path: '/admin' AdminRouting
+  // path: '/admin' AdminRouting configured
   { path: '', redirectTo: 'admin', pathMatch: 'full' },
   { path: '**', redirectTo: 'admin', pathMatch: 'full' },
 ];
