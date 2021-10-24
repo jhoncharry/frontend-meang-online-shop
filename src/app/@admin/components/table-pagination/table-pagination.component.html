@@ -1,0 +1,41 @@
+<div class="table-responsive">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col" *ngFor="let column of tableColumns">
+          {{ column.label }}
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of data$ | async">
+        <td *ngFor="let value of tableColumns">{{ data[value.property] }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div
+  class="d-flex justify-content-between p-2"
+  *ngIf="pageInformation.pages > 1"
+>
+  <ngb-pagination
+    [collectionSize]="pageInformation.total"
+    [(page)]="pageInformation.page"
+    [pageSize]="pageInformation.itemsPage"
+    (pageChange)="changePage()"
+  >
+  </ngb-pagination>
+
+  <select
+    class="form-select"
+    style="width: auto; height: fit-content"
+    [(ngModel)]="pageInformation.itemsPage"
+    (ngModelChange)="loadData()"
+  >
+    <option [ngValue]="5">5 items per page</option>
+    <option [ngValue]="10">10 items per page</option>
+    <option [ngValue]="15">15 items per page</option>
+    <option [ngValue]="20">20 items per page</option>
+  </select>
+</div>

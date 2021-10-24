@@ -1,5 +1,5 @@
 <!-- Sidebar-->
-<div class="border-end bg-white" id="sidebar-wrapper">
+<div class="border-end bg-white full_height" id="sidebar-wrapper">
   <div class="sidebar-heading border-bottom">
     <a
       [routerLink]="['/home']"
@@ -11,15 +11,21 @@
   <div class="list-group list-group-flush">
     <a
       class="list-group-item list-group-item-action list-group-item-light p-3"
-      [routerLink]="['/admin']"
+      [routerLink]="['']"
       routerLinkActive="router-link-active"
       ><i class="fas fa-columns"></i> Dashboard</a
     >
     <a
       class="list-group-item list-group-item-action list-group-item-light p-3"
-      [routerLink]="['/admin/users']"
+      [routerLink]="['users']"
       routerLinkActive="router-link-active"
       ><i class="far fa-address-book"></i> Users</a
+    >
+    <a
+      class="list-group-item list-group-item-action list-group-item-light p-3"
+      [routerLink]="['genres']"
+      routerLinkActive="router-link-active"
+      ><i class="fas fa-atlas"></i> Genres</a
     >
   </div>
 </div>

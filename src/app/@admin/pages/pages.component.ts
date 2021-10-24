@@ -4,11 +4,11 @@ declare function customInitFunctions(): any;
 
 @Component({
   selector: 'app-admin',
-  templateUrl: './admin.component.html',
-  styleUrls: ['./admin.component.scss'],
+  templateUrl: './pages.component.html',
+  styleUrls: ['./pages.component.scss'],
   encapsulation: ViewEncapsulation.None,
 })
-export class AdminComponent implements OnInit {
+export class PagesComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {

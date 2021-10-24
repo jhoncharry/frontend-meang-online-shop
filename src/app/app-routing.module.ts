@@ -1,12 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthRoutingModule } from './@admin/auth/auth.routing';
-import { AdminRoutingModule } from './@admin/pages/admin-routing.module';
+import { NopagefoundComponent } from './@admin/nopagefound/nopagefound.component';
+import { PagesRoutingModule } from './@admin/pages/pages.routing';
 
 const routes: Routes = [
   // path: '/admin' AdminRouting
-  { path: '', redirectTo: 'admin', pathMatch: 'full' },
-  { path: '**', redirectTo: 'admin', pathMatch: 'full' },
+  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+  { path: '**', component: NopagefoundComponent },
 ];
 
 @NgModule({
@@ -15,7 +16,7 @@ const routes: Routes = [
       useHash: true,
       scrollPositionRestoration: 'enabled',
     }),
-    AdminRoutingModule,
+    PagesRoutingModule,
     AuthRoutingModule,
   ],
   exports: [RouterModule],

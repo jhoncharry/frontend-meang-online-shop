@@ -1,11 +1,14 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AdminComponent } from './admin.component';
+import { AuthGuard } from 'src/app/@core/guards/auth.guard';
+import { PagesComponent } from './pages.component';
 
 const routes: Routes = [
   {
-    path: 'admin',
-    component: AdminComponent,
+    path: 'dashboard',
+    component: PagesComponent,
+    canActivate: [AuthGuard],
+    canLoad: [AuthGuard],
     loadChildren: () =>
       import('./child-routing.module').then((m) => m.ChildRoutingModule),
   },
@@ -15,4 +18,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class AdminRoutingModule {}
+export class PagesRoutingModule {}
