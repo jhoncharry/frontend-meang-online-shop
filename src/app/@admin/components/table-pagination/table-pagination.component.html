@@ -1,3 +1,10 @@
+<button
+  class="btn btn-success me-3 mb-2 float-end"
+  (click)="manageAction('add', '')"
+>
+  <i class="fas fa-plus-circle"></i>&nbsp;Add
+</button>
+<br /><br />
 <div class="table-responsive">
   <table class="table table-striped">
     <thead>
@@ -5,37 +12,57 @@
         <th scope="col" *ngFor="let column of tableColumns">
           {{ column.label }}
         </th>
+        <th scope="col">Manage information</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let data of data$ | async">
         <td *ngFor="let value of tableColumns">{{ data[value.property] }}</td>
+        <td>
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="manageAction('edit', data)"
+          >
+            <i class="fas fa-edit"></i></button
+          >&nbsp;
+          <button
+            type="button"
+            class="btn btn-info"
+            (click)="manageAction('info', data)"
+          >
+            <i class="fas fa-info"></i></button
+          >&nbsp;
+          <button
+            type="button"
+            class="btn btn-danger"
+            (click)="manageAction('block', data)"
+          >
+            <i class="fas fa-lock"></i>
+          </button>
+        </td>
       </tr>
     </tbody>
   </table>
 </div>
 
-<div
-  class="d-flex justify-content-between p-2"
-  *ngIf="pageInformation.pages > 1"
->
+<div class="d-flex justify-content-between p-2">
   <ngb-pagination
-    [collectionSize]="pageInformation.total"
-    [(page)]="pageInformation.page"
-    [pageSize]="pageInformation.itemsPage"
-    (pageChange)="changePage()"
+    [collectionSize]="total"
+    [(page)]="page"
+    (pageChange)="changePage($event)"
+    [pageSize]="itemsPage"
   >
   </ngb-pagination>
 
   <select
     class="form-select"
     style="width: auto; height: fit-content"
-    [(ngModel)]="pageInformation.itemsPage"
-    (ngModelChange)="loadData()"
+    [(ngModel)]="itemsPage"
+    (ngModelChange)="changeItemPage($event)"
   >
-    <option [ngValue]="5">5 items per page</option>
-    <option [ngValue]="10">10 items per page</option>
-    <option [ngValue]="15">15 items per page</option>
-    <option [ngValue]="20">20 items per page</option>
+    <option *ngFor="let item of allowPageItems" [ngValue]="item">
+      {{ item }} items per page
+    </option>
   </select>
 </div>

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/@core/services/auth.service';
-import { UsersService } from 'src/app/@core/services/users.service';
+import { UserService } from 'src/app/@core/services/user.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -29,14 +29,14 @@ export class LoginComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private auth: AuthService,
-    private userSerive: UsersService,
+    private userService: UserService,
     private router: Router
   ) {}
 
   ngOnDestroy(): void {}
 
   ngOnInit(): void {
-    this.userSerive
+    this.userService
       .getUsers(2, 1)
       .subscribe(({ data: { users }, loading, errors }) => {
         console.log('dsadsaads', users);

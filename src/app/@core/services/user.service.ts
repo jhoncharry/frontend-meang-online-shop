@@ -1,7 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { first, map } from 'rxjs/operators';
-import { register } from 'src/app/@graphql/operators/mutation/user.mutation';
+import {
+  deleteUser,
+  registerUser,
+  updateUser,
+} from 'src/app/@graphql/operators/mutation/user.mutation';
 import { getUsers } from 'src/app/@graphql/operators/query/user.query';
 import { ApiService } from 'src/app/@graphql/service/api.service';
 import { IRegisterForm } from '../interfaces/register-form.interface';
@@ -9,7 +13,7 @@ import { IRegisterForm } from '../interfaces/register-form.interface';
 @Injectable({
   providedIn: 'root',
 })
-export class UsersService extends ApiService {
+export class UserService extends ApiService {
   constructor(apollo: Apollo) {
     super(apollo);
   }
@@ -24,7 +28,24 @@ export class UsersService extends ApiService {
 
   // Register user
   register(user: IRegisterForm) {
-    return this.set(register, { user, include: false }).pipe(
+    return this.set(registerUser, { user, include: false }).pipe(
+      first(),
+      map((result: any) => result)
+    );
+  }
+
+  // Update user
+  update(user: IRegisterForm) {
+    console.log(user);
+    return this.set(updateUser, { user, include: false }).pipe(
+      first(),
+      map((result: any) => result)
+    );
+  }
+
+  // Delete user
+  delete(_id: string) {
+    return this.set(deleteUser, { _id, include: false }).pipe(
       first(),
       map((result: any) => result)
     );

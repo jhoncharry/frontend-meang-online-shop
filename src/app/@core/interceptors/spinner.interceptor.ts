@@ -29,7 +29,9 @@ export class SpinnerInterceptor implements HttpInterceptor {
       ),
       finalize(() => {
         this.count--;
-        if (this.count == 0) this.spinner.hide();
+        if (this.count == 0) {
+          this.spinner.hide();
+        }
       })
     );
   }

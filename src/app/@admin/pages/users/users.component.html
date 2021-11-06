@@ -6,4 +6,359 @@
   [itemsPage]="itemsPage"
   [dataList]="dataList"
   [tableColumns]="columns"
+  [load]="load"
+  (manageItem)="takeAction($event)"
+  (loadChild)="takeLoad($event)"
 ></app-table-pagination>
+
+<!-- REGISTER -->
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">User registration</h4>
+    <button
+      type="button"
+      class="btn-close"
+      aria-label="Close"
+      (click)="modal.dismiss('Cross click')"
+    ></button>
+  </div>
+
+  <form [formGroup]="registerForm" (ngSubmit)="register()">
+    <div class="modal-body">
+      <p>Fill in the form to register your user account.</p>
+      <hr />
+
+      <label for="name"><b>Nombre</b></label>
+      <input
+        type="text"
+        placeholder="Enter name"
+        name="name"
+        formControlName="name"
+        class="form-control"
+        [ngClass]="{
+          'is-invalid': submitted && getControlRegister.name.errors
+        }"
+        required
+      />
+      <div
+        *ngIf="submitted && getControlRegister.name.errors"
+        class="invalid-feedback"
+      >
+        <div *ngIf="getControlRegister.name.errors.required">
+          Name is required
+        </div>
+      </div>
+      <br />
+
+      <label for="name"><b>Apellido</b></label>
+      <input
+        type="text"
+        placeholder="Enter lastname"
+        name="lastname"
+        formControlName="lastname"
+        class="form-control"
+        [ngClass]="{
+          'is-invalid': submitted && getControlRegister.lastname.errors
+        }"
+        required
+      />
+      <div
+        *ngIf="submitted && getControlRegister.lastname.errors"
+        class="invalid-feedback"
+      >
+        <div *ngIf="getControlRegister.lastname.errors.required">
+          Lastname is required
+        </div>
+      </div>
+      <br />
+
+      <label for="email"><b>Fecha de nacimiento</b></label>
+      <app-date-picker-legal-age
+        [datePicker]="datePickerValidation"
+        (newDate)="dataAsign($event)"
+      ></app-date-picker-legal-age>
+      <div
+        *ngIf="submitted && getControlRegister.birthday.errors"
+        class="invalid-feedback d-block"
+      >
+        <div *ngIf="getControlRegister.birthday.errors.required">
+          Birthday is required
+        </div>
+      </div>
+
+      <label for="role"><b>Roles</b></label>
+      <select
+        class="form-select"
+        (change)="changeRole($event)"
+        [ngClass]="{
+          'is-invalid': submitted && getControlRegister.role.errors
+        }"
+        required
+      >
+        <option disabled selected>Choose the role</option>
+        <option *ngFor="let role of roles" [value]="role">
+          {{ role }}
+        </option>
+      </select>
+      <div
+        *ngIf="submitted && getControlRegister.role.errors"
+        class="invalid-feedback"
+      >
+        <div *ngIf="getControlRegister.role.errors.required">
+          Role is required
+        </div>
+        <div
+          *ngIf="
+            !getControlRegister.role.errors.required &&
+            getControlRegister.role.errors.invalidRole
+          "
+        >
+          Role is invalid
+        </div>
+      </div>
+      <br />
+
+      <label for="email"><b>Email</b></label>
+      <input
+        type="text"
+        placeholder="Enter Email"
+        name="email"
+        formControlName="email"
+        class="form-control"
+        [ngClass]="{
+          'is-invalid': submitted && getControlRegister.email.errors
+        }"
+        required
+      />
+      <div
+        *ngIf="submitted && getControlRegister.email.errors"
+        class="invalid-feedback"
+      >
+        <div *ngIf="getControlRegister.email.errors.required">
+          Email is required
+        </div>
+        <div *ngIf="getControlRegister.email.errors.email">
+          Email must be a valid email address
+        </div>
+      </div>
+      <br />
+
+      <label for="psw"><b>Password</b></label>
+      <input
+        type="password"
+        placeholder="Enter Password"
+        name="psw"
+        formControlName="password"
+        class="form-control"
+        [ngClass]="{
+          'is-invalid': submitted && getControlRegister.password.errors
+        }"
+        required
+      />
+      <div
+        *ngIf="submitted && getControlRegister.password.errors"
+        class="invalid-feedback"
+      >
+        <div *ngIf="getControlRegister.password.errors.required">
+          Password is required
+        </div>
+      </div>
+      <br />
+    </div>
+
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-outline-dark">Save</button>
+    </div>
+  </form>
+</ng-template>
+
+<!-- UPDATE -->
+<ng-template #contentUpdate let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Update User</h4>
+    <button
+      type="button"
+      class="btn-close"
+      aria-label="Close"
+      (click)="modal.dismiss('Cross click')"
+    ></button>
+  </div>
+
+  <form [formGroup]="updateForm" (ngSubmit)="update()">
+    <div class="modal-body">
+      <p>Fill in the form to register your user account.</p>
+      <hr />
+
+      <label for="name"><b>Nombre</b></label>
+      <input
+        type="text"
+        placeholder="Enter name"
+        name="name"
+        formControlName="name"
+        class="form-control"
+        [ngClass]="{ 'is-invalid': submitted && getControlUpdate.name.errors }"
+        required
+      />
+      <div
+        *ngIf="submitted && getControlUpdate.name.errors"
+        class="invalid-feedback"
+      >
+        <div *ngIf="getControlUpdate.name.errors.required">
+          Name is required
+        </div>
+      </div>
+      <br />
+
+      <label for="name"><b>Apellido</b></label>
+      <input
+        type="text"
+        placeholder="Enter lastname"
+        name="lastname"
+        formControlName="lastname"
+        class="form-control"
+        [ngClass]="{
+          'is-invalid': submitted && getControlUpdate.lastname.errors
+        }"
+        required
+      />
+      <div
+        *ngIf="submitted && getControlUpdate.lastname.errors"
+        class="invalid-feedback"
+      >
+        <div *ngIf="getControlUpdate.lastname.errors.required">
+          Lastname is required
+        </div>
+      </div>
+      <br />
+
+      <label for="email"><b>Fecha de nacimiento</b></label>
+      <app-date-picker-legal-age
+        [datePicker]="datePickerValidation"
+        [defaultDate]="defaultDate"
+        (newDate)="dataAsign($event)"
+      ></app-date-picker-legal-age>
+      <div
+        *ngIf="submitted && getControlUpdate.birthday.errors"
+        class="invalid-feedback d-block"
+      >
+        <div *ngIf="getControlUpdate.birthday.errors.required">
+          Birthday is required
+        </div>
+      </div>
+      <br />
+
+      <label for="role"><b>Roles</b></label>
+      <select
+        formControlName="role"
+        class="form-select"
+        (change)="changeRole($event)"
+        [ngClass]="{
+          'is-invalid': submitted && getControlUpdate.role.errors
+        }"
+        required
+      >
+        <option *ngFor="let role of roles" [value]="role">
+          {{ role }}
+        </option>
+      </select>
+      <div
+        *ngIf="submitted && getControlUpdate.role.errors"
+        class="invalid-feedback"
+      >
+        <div *ngIf="getControlUpdate.role.errors.required">
+          Role is required
+        </div>
+        <div
+          *ngIf="
+            !getControlUpdate.role.errors.required &&
+            getControlUpdate.role.errors.invalidRole
+          "
+        >
+          Role is invalid
+        </div>
+      </div>
+
+      <br />
+    </div>
+
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-outline-dark">Save</button>
+    </div>
+  </form>
+</ng-template>
+
+<!-- INFORMATION -->
+<ng-template #contentInformation let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Information User</h4>
+    <button
+      type="button"
+      class="btn-close"
+      aria-label="Close"
+      (click)="modal.dismiss('Cross click')"
+    ></button>
+  </div>
+
+  <form>
+    <div class="modal-body">
+      <p>Fill in the form to register your user account.</p>
+      <hr />
+
+      <label for="name"><b>Nombre</b></label>
+      <input
+        type="text"
+        placeholder="Enter name"
+        name="name"
+        class="form-control"
+        [value]="this.userInformation.name"
+        readonly
+      />
+
+      <br />
+
+      <label for="name"><b>Apellido</b></label>
+      <input
+        type="text"
+        placeholder="Enter lastname"
+        name="lastname"
+        class="form-control"
+        [value]="this.userInformation.lastname"
+        readonly
+      />
+      <br />
+
+      <label for="email"><b>Fecha de nacimiento</b></label>
+      <input
+        type="text"
+        name="birthday"
+        class="form-control"
+        [value]="this.userInformation.birthday"
+        readonly
+      />
+      <br />
+
+      <label for="email"><b>Role</b></label>
+      <input
+        type="text"
+        name="role"
+        class="form-control"
+        [value]="this.userInformation.role"
+        readonly
+      />
+      <br />
+    </div>
+
+    <div class="modal-footer">
+      <button
+        type="submit"
+        class="btn btn-secondary"
+        (click)="editTransition()"
+      >
+        <i class="fas fa-edit"></i>Edit
+      </button>
+      <button type="submit" class="btn btn-danger" (click)="deleteTransition()">
+        Block
+      </button>
+    </div>
+  </form>
+</ng-template>

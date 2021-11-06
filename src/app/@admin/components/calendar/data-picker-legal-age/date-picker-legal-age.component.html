@@ -1,0 +1,17 @@
+<input
+  type="text"
+  class="form-control"
+  ngbDatepicker
+  #d="ngbDatepicker"
+  placeholder="Seleccione fecha"
+  [(ngModel)]="model"
+  [startDate]="model"
+  (click)="d.toggle()"
+  (ngModelChange)="selectDateChange()"
+  [minDate]="minDate"
+  [maxDate]="maxDate"
+  [ngClass]="{ 'is-invalid': datePicker }"
+  readonly
+/>
+{{ model | json }}
+<p>Today's item: {{ datePicker }}</p>

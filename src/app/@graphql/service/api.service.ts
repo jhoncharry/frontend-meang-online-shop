@@ -16,7 +16,7 @@ export class ApiService {
         query,
         variables,
         context,
-        fetchPolicy: 'no-cache',
+        fetchPolicy: 'network-only',
       })
       .valueChanges.pipe(map((result: any) => result));
   }
@@ -27,7 +27,7 @@ export class ApiService {
         mutation,
         variables,
         context,
-        fetchPolicy: 'no-cache',
+        fetchPolicy: 'network-only',
       })
       .pipe(map((result) => result));
   }

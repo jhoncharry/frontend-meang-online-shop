@@ -1,8 +1,17 @@
-import { Component, Input, OnInit } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DocumentNode } from 'graphql';
 import { Observable } from 'rxjs';
 import { first, map } from 'rxjs/operators';
-import { getUsers } from 'src/app/@graphql/operators/query/user.query';
 import { TablePaginationService } from './table-pagination.service';
 
 @Component({
@@ -10,7 +19,9 @@ import { TablePaginationService } from './table-pagination.service';
   templateUrl: './table-pagination.component.html',
   styleUrls: ['./table-pagination.component.scss'],
 })
-export class TablePaginationComponent implements OnInit {
+export class TablePaginationComponent
+  implements OnInit, OnChanges, OnDestroy, OnChanges
+{
   @Input() query: DocumentNode;
   @Input() context: object;
 
@@ -20,12 +31,39 @@ export class TablePaginationComponent implements OnInit {
   @Input() dataList: any;
   @Input() tableColumns: Array<any>;
 
-  pageInformation: any;
+  @Input() load: boolean;
+
+  @Output() manageItem = new EventEmitter<string[]>();
+  @Output() loadChild = new EventEmitter<boolean>();
+
   data$: Observable<any>;
 
-  constructor(private tableService: TablePaginationService) {}
+  page: number;
+  pages: number;
+  total: number;
 
-  ngOnInit(): void {
+  allowPageItems: number[];
+  defaultItemPage: number;
+
+  constructor(
+    private tableService: TablePaginationService,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {
+    this.allowPageItems = [5, 10, 15, 20];
+  }
+
+  ngOnDestroy(): void {
+    console.log('DESTRUYÓ');
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.load && changes.load.currentValue === true) {
+      this.loadData();
+    }
+  }
+
+  ngOnInit() {
     if (!this.query) throw new Error('Query is undefined, please add');
 
     if (!this.dataList) throw new Error('Data list is undefined, please add');
@@ -33,36 +71,109 @@ export class TablePaginationComponent implements OnInit {
     if (!this.tableColumns)
       throw new Error('Table Columns is undefined, please add');
 
-    this.pageInformation = {
-      page: 1,
-      pages: 1,
-      itemsPage: this.itemsPage || 10,
-      total: 1,
-    };
+    this.itemsPage = this.itemsPage || 10;
+    this.defaultItemPage = this.allowPageItems.includes(this.itemsPage)
+      ? this.itemsPage
+      : 10;
 
-    this.loadData();
+    this.route.queryParams.subscribe(async (params) => {
+      this.total = this.total || (await this.totalDocumentLoad().toPromise());
+
+      // Page
+      const pageParams = +params.page;
+      this.page = pageParams;
+      if (!this.page) {
+        this.page = 1;
+      }
+
+      // Items page
+      const itemsParams = +params.items;
+      if (itemsParams && itemsParams === this.defaultItemPage) {
+        this.defaultNavigate();
+      }
+
+      if (itemsParams) {
+        this.itemsPage = itemsParams;
+      } else if (this.itemsPage !== this.defaultItemPage) {
+        this.defaultNavigate();
+      }
+
+      if (this.allowPageItems.includes(this.itemsPage)) {
+        this.loadData();
+      } else {
+        this.defaultNavigate();
+      }
+    });
+  }
+
+  defaultNavigate() {
+    this.itemsPage = this.defaultItemPage;
+    this.router.navigate([]);
+  }
+
+  getVariables() {
+    return {
+      page: this.page,
+      itemsPage: this.itemsPage,
+      include: this.include,
+    };
   }
 
   loadData() {
-    const variables = {
-      page: this.pageInformation.page,
-      itemsPage: this.pageInformation.itemsPage,
-      include: this.include || false,
-    };
-
     this.data$ = this.tableService
-      .getCollectionData(this.query, variables, this.context)
+      .getCollectionData(this.query, this.getVariables(), this.context)
       .pipe(
+        first(),
         map((result) => {
           const data = result.data[this.dataList.definitionKey];
-          this.pageInformation.pages = data.info.pages;
-          this.pageInformation.total = data.info.total;
-          return data[this.dataList.listKey];
+          if (data) {
+            this.total = data.info.total;
+            this.pages = data.info.pages;
+            this.loadChild.emit(false);
+            return data[this.dataList.listKey];
+          }
         })
       );
   }
 
-  changePage() {
-    this.loadData();
+  totalDocumentLoad() {
+    return this.tableService
+      .getCollectionData(this.query, this.getVariables(), this.context)
+      .pipe(
+        first(),
+        map((result) => {
+          const data = result.data[this.dataList.definitionKey];
+          if (data) {
+            const { total } = data.info;
+            if (!total)
+              throw new Error(
+                'The number of documents is undefined, please check with support'
+              );
+            return total;
+          }
+        })
+      );
+  }
+
+  changeItemPage(items: number) {
+    if (items === this.defaultItemPage) {
+      this.router.navigate([]);
+    } else {
+      this.router.navigate([], {
+        queryParams: { items },
+      });
+    }
+  }
+
+  changePage(page: number) {
+    this.router.navigate([], {
+      queryParams: { page },
+      queryParamsHandling: 'merge',
+    });
+  }
+
+  manageAction(action: string, data: any) {
+    console.log('DATA', action, data);
+    this.manageItem.emit([action, data]);
   }
 }
