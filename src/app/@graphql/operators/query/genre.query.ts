@@ -4,8 +4,8 @@ import { resultInfoFragment } from '../fragment/result-info.fragment';
 import { userFragment } from '../fragment/user.fragment';
 
 export const getGenres = gql`
-  query getGenres($page: Int, $itemsPage: Int) {
-    genres(page: $page, itemsPage: $itemsPage) {
+  query getGenres($page: Int, $itemsPage: Int, $active: ActiveFilterEnum) {
+    genres(page: $page, itemsPage: $itemsPage, active: $active) {
       info {
         ...ResultInfoObject
       }

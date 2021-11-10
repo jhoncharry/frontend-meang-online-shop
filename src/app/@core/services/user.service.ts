@@ -4,6 +4,7 @@ import { first, map } from 'rxjs/operators';
 import {
   deleteUser,
   registerUser,
+  unblockUser,
   updateUser,
 } from 'src/app/@graphql/operators/mutation/user.mutation';
 import { getUsers } from 'src/app/@graphql/operators/query/user.query';
@@ -46,6 +47,14 @@ export class UserService extends ApiService {
   // Delete user
   delete(_id: string) {
     return this.set(deleteUser, { _id, include: false }).pipe(
+      first(),
+      map((result: any) => result)
+    );
+  }
+
+  // Unblock user
+  unblock(_id: string, unblock: boolean) {
+    return this.set(unblockUser, { _id, unblock, include: false }).pipe(
       first(),
       map((result: any) => result)
     );

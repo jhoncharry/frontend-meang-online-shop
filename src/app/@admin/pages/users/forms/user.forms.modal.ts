@@ -181,8 +181,8 @@ export class UserFormsModal {
     }
   }
 
-  deleteUser(id: any) {
-    return this.userService.delete(id).pipe(
+  deleteUser(_id: any) {
+    return this.userService.delete(_id).pipe(
       map(({ data: { deleteUser }, errors }) => {
         if (deleteUser) {
           Swal.fire('User Deleted', 'Successful delete', 'success');
@@ -190,6 +190,38 @@ export class UserFormsModal {
         } else if (errors) {
           this.load = false;
           Swal.fire('Genre Deleted', errors[0].message, 'error');
+        }
+        return of({
+          load: this.load,
+        });
+      }),
+      catchError(() => {
+        this.load = false;
+        Swal.fire('Error', 'Something went wrong... Networking!', 'error');
+        return of({
+          load: this.load,
+        });
+      })
+    );
+  }
+
+  unblockUser(_id: any, unblock: boolean) {
+    return this.userService.unblock(_id, unblock).pipe(
+      map(({ data: { unblockUser }, errors }) => {
+        if (unblockUser) {
+          if (unblock) {
+            Swal.fire(
+              'User Unblocked',
+              'user successfully unblocked',
+              'success'
+            );
+          } else {
+            Swal.fire('User Blocked', 'user successfully blocked', 'success');
+          }
+          this.load = true;
+        } else if (errors) {
+          this.load = false;
+          Swal.fire('User Blocked/Unblocked', errors[0].message, 'error');
         }
         return of({
           load: this.load,

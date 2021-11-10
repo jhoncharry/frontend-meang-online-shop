@@ -16,6 +16,7 @@ import { alertWithTwoOptions } from '../../shared/alerts/alerts';
 import { mergeMap } from 'rxjs/operators';
 import { Observable, of, Subscription } from 'rxjs';
 import { formatNumbers, legalDate } from 'src/app/@core/helpers/form.functions';
+import { ActiveValues } from 'src/app/@core/types/user-active';
 
 @Component({
   selector: 'app-users',
@@ -34,6 +35,7 @@ export class UsersComponent implements OnInit {
   columns: Array<any>;
 
   load: boolean = false;
+  filterActiveValues: ActiveValues = ActiveValues.ACTIVE;
 
   // ******** DATE AND FORM SUBMITTED *************************************
   datePickerValidation: any = false;
@@ -92,7 +94,10 @@ export class UsersComponent implements OnInit {
         this.openInformation(this.contentInformation);
         break;
       case 'block':
-        this.deleteForm();
+        this.blockForm();
+        break;
+      case 'unblock':
+        this.unblockForm();
         break;
       default:
         this.action = '';
@@ -213,28 +218,43 @@ export class UsersComponent implements OnInit {
     this.openUpdate(this.contentUpdate);
   }
 
-  deleteTransition() {
+  unblockTransition() {
     this.modalElement.close();
 
-    this.action = 'block';
-    this.deleteForm();
+    if (this.userInformation.active !== false) {
+      this.action = 'block';
+      this.blockForm();
+    } else {
+      this.action = 'unblock';
+      this.unblockForm();
+    }
   }
 
-  // **************************************************** DELETE ************************************************
+  // **************************************************** UNBLOCK ************************************************
 
-  async deleteForm() {
+  async blockForm() {
     const result = await alertWithTwoOptions(
-      'User Delete',
-      'Do you want to delete this user?',
+      'Block User',
+      'Do you want to block this user?',
       'No.',
-      'Yes.'
+      '<i class="fas fa-lock"></i>&nbsp;Yes.'
     );
-    if (result === false) this.delete(this.userInformation._id);
+    if (result === false) this.unblock(this.userInformation._id, false);
   }
 
-  delete(id: any) {
+  async unblockForm() {
+    const result = await alertWithTwoOptions(
+      'Unblock user',
+      'Do you want to unblock this user?',
+      'No.',
+      '<i class="fas fa-lock-open"></i>&nbsp;Yes.'
+    );
+    if (result === false) this.unblock(this.userInformation._id, true);
+  }
+
+  unblock(id: any, unblock: boolean) {
     this.userFormsModal
-      .deleteUser(id)
+      .unblockUser(id, unblock)
       .pipe(mergeMap((results: any) => results))
       .subscribe((result: any) => {
         const { load } = result;
@@ -288,6 +308,10 @@ export class UsersComponent implements OnInit {
       {
         label: 'Roles',
         property: 'role',
+      },
+      {
+        label: 'Active?',
+        property: 'active',
       },
     ];
   }

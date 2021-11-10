@@ -3,7 +3,7 @@ import { Apollo } from 'apollo-angular';
 import { first, map } from 'rxjs/operators';
 import {
   addGenre,
-  blockGenre,
+  unblockGenre,
   updateGenre,
 } from 'src/app/@graphql/operators/mutation/genre.mutation';
 import { ApiService } from 'src/app/@graphql/service/api.service';
@@ -35,8 +35,8 @@ export class GenreService extends ApiService {
   }
 
   // Update genre
-  blockGenre(id: any) {
-    return this.set(blockGenre, { id }).pipe(
+  unblockGenre(id: any, unblock: boolean) {
+    return this.set(unblockGenre, { id, unblock }).pipe(
       first(),
       map((result: any) => result)
     );

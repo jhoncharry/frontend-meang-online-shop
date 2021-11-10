@@ -127,15 +127,23 @@ export class GenreFormsModal {
     }
   }
 
-  blockGenre(id: any) {
-    return this.genreService.blockGenre(id).pipe(
-      map(({ data: { blockGenre }, errors }) => {
-        if (blockGenre) {
-          Swal.fire('Genre Blocked', 'Successful block', 'success');
+  unblockUser(id: any, unblock: boolean) {
+    return this.genreService.unblockGenre(id, unblock).pipe(
+      map(({ data: { unblockGenre }, errors }) => {
+        if (unblockGenre) {
+          if (unblock) {
+            Swal.fire(
+              'Genre Unblocked',
+              'Genre successfully unblocked',
+              'success'
+            );
+          } else {
+            Swal.fire('Genre Blocked', 'genre successfully blocked', 'success');
+          }
           this.load = true;
         } else if (errors) {
           this.load = false;
-          Swal.fire('Genre Blocked', errors[0].message, 'error');
+          Swal.fire('Genre Blocked/Unblocked', errors[0].message, 'error');
         }
         return of({
           load: this.load,

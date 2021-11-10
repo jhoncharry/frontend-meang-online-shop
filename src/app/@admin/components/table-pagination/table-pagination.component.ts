@@ -12,6 +12,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DocumentNode } from 'graphql';
 import { Observable } from 'rxjs';
 import { first, map } from 'rxjs/operators';
+import { ActiveValues } from 'src/app/@core/types/user-active';
 import { TablePaginationService } from './table-pagination.service';
 
 @Component({
@@ -32,6 +33,7 @@ export class TablePaginationComponent
   @Input() tableColumns: Array<any>;
 
   @Input() load: boolean;
+  @Input() filterActiveValues: ActiveValues = ActiveValues.ACTIVE;
 
   @Output() manageItem = new EventEmitter<string[]>();
   @Output() loadChild = new EventEmitter<boolean>();
@@ -45,12 +47,15 @@ export class TablePaginationComponent
   allowPageItems: number[];
   defaultItemPage: number;
 
+  allowActiveFilter: string[];
+
   constructor(
     private tableService: TablePaginationService,
     private router: Router,
     private route: ActivatedRoute
   ) {
     this.allowPageItems = [5, 10, 15, 20];
+    this.allowActiveFilter = ['ALL', 'ACTIVE', 'INACTIVE'];
   }
 
   ngOnDestroy(): void {
@@ -116,6 +121,7 @@ export class TablePaginationComponent
       page: this.page,
       itemsPage: this.itemsPage,
       include: this.include,
+      active: this.filterActiveValues,
     };
   }
 
@@ -170,6 +176,10 @@ export class TablePaginationComponent
       queryParams: { page },
       queryParamsHandling: 'merge',
     });
+  }
+
+  changeActiveFilter(items: string) {
+    console.log('VALUE', items, typeof items);
   }
 
   manageAction(action: string, data: any) {

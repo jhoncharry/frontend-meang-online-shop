@@ -7,6 +7,7 @@
   [dataList]="dataList"
   [tableColumns]="columns"
   [load]="load"
+  [filterActiveValues]="filterActiveValues"
   (manageItem)="takeAction($event)"
   (loadChild)="takeLoad($event)"
 ></app-table-pagination>
@@ -139,8 +140,17 @@
       >
         <i class="fas fa-edit"></i>Edit
       </button>
-      <button type="submit" class="btn btn-danger" (click)="deleteTransition()">
-        Block
+      <button
+        type="submit"
+        class="btn btn-danger"
+        (click)="unblockTransition()"
+      >
+        <span *ngIf="genreInformation.active === false; else genreBlockIcon">
+          <i class="fas fa-lock-open"></i>&nbsp;Unblock
+        </span>
+        <ng-template #genreBlockIcon>
+          <i class="fas fa-lock"></i>&nbsp;Block
+        </ng-template>
       </button>
     </div>
   </form>

@@ -28,9 +28,9 @@ export const updateGenre = gql`
   }
 `;
 
-export const blockGenre = gql`
-  mutation blockGenre($id: ID!) {
-    blockGenre(id: $id) {
+export const unblockGenre = gql`
+  mutation unblockGenre($id: ID!, $unblock: Boolean!) {
+    unblockGenre(id: $id, unblock: $unblock) {
       status
       message
       genre {

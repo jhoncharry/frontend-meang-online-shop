@@ -58,8 +58,13 @@ export const renewToken = gql`
 `;
 
 export const getUsers = gql`
-  query getUsers($include: Boolean!, $page: Int, $itemsPage: Int) {
-    users(page: $page, itemsPage: $itemsPage) {
+  query getUsers(
+    $include: Boolean!
+    $page: Int
+    $itemsPage: Int
+    $active: ActiveFilterEnum
+  ) {
+    users(page: $page, itemsPage: $itemsPage, active: $active) {
       info {
         ...ResultInfoObject
       }

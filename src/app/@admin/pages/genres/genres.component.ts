@@ -9,6 +9,7 @@ import { getGenres } from 'src/app/@graphql/operators/query/genre.query';
 import { alertWithTwoOptions } from '../../shared/alerts/alerts';
 import { mergeMap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
+import { ActiveValues } from 'src/app/@core/types/user-active';
 
 @Component({
   selector: 'app-genres',
@@ -27,6 +28,7 @@ export class GenresComponent implements OnInit {
   columns: Array<any>;
 
   load: boolean = false;
+  filterActiveValues: ActiveValues = ActiveValues.ACTIVE;
 
   // ******** FORM SUBMITTED *************************************
   submitted = false;
@@ -80,7 +82,10 @@ export class GenresComponent implements OnInit {
         this.openInformation(this.contentInformation);
         break;
       case 'block':
-        this.deleteForm();
+        this.blockForm();
+        break;
+      case 'unblock':
+        this.unblockForm();
         break;
       default:
         this.action = '';
@@ -162,28 +167,43 @@ export class GenresComponent implements OnInit {
     this.openUpdate(this.contentUpdate);
   }
 
-  deleteTransition() {
+  unblockTransition() {
     this.modalElement.close();
 
-    this.action = 'block';
-    this.deleteForm();
+    if (this.genreInformation.active !== false) {
+      this.action = 'block';
+      this.blockForm();
+    } else {
+      this.action = 'unblock';
+      this.unblockForm();
+    }
   }
 
   // **************************************************** DELETE ************************************************
 
-  async deleteForm() {
+  async blockForm() {
     const result = await alertWithTwoOptions(
-      'Genre Block',
+      'Block Genre',
       'Do you want to block this genre?',
       'No.',
-      'Yes.'
+      '<i class="fas fa-lock"></i>&nbsp;Yes.'
     );
-    if (result === false) this.delete(this.genreInformation.id);
+    if (result === false) this.unblock(this.genreInformation.id, false);
   }
 
-  delete(id: any) {
+  async unblockForm() {
+    const result = await alertWithTwoOptions(
+      'Unblock user',
+      'Do you want to unblock this user?',
+      'No.',
+      '<i class="fas fa-lock-open"></i>&nbsp;Yes.'
+    );
+    if (result === false) this.unblock(this.genreInformation.id, true);
+  }
+
+  unblock(id: any, unblock: boolean) {
     this.genreFormsModal
-      .blockGenre(id)
+      .unblockUser(id, unblock)
       .pipe(mergeMap((results: any) => results))
       .subscribe((result: any) => {
         const { load } = result;
@@ -229,6 +249,10 @@ export class GenresComponent implements OnInit {
       {
         label: 'Slug',
         property: 'slug',
+      },
+      {
+        label: 'Active?',
+        property: 'active',
       },
     ];
   }

@@ -39,3 +39,16 @@ export const deleteUser = gql`
   }
   ${userFragment}
 `;
+
+export const unblockUser = gql`
+  mutation unblockUser($_id: ID!, $unblock: Boolean!, $include: Boolean!) {
+    unblockUser(_id: $_id, unblock: $unblock) {
+      status
+      message
+      user {
+        ...UserObject
+      }
+    }
+  }
+  ${userFragment}
+`;
