@@ -36,7 +36,7 @@ export class TablePaginationComponent implements OnInit, OnChanges {
   @Output() manageItem = new EventEmitter<string[]>();
   @Output() loadChild = new EventEmitter<boolean>();
 
-  data$: any;
+  data$: Observable<any>;
 
   page: number;
   pages: number;
