@@ -8,7 +8,7 @@
   class="form-select me-3 mb-2 float-end"
   style="width: auto; height: fit-content"
   [(ngModel)]="filterActiveValues"
-  (ngModelChange)="loadData()"
+  (ngModelChange)="changeActiveStatus($event)"
 >
   <option
     *ngFor="let activeFilter of allowActiveFilter"

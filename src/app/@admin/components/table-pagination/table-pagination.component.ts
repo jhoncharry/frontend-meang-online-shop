@@ -3,7 +3,6 @@ import {
   EventEmitter,
   Input,
   OnChanges,
-  OnDestroy,
   OnInit,
   Output,
   SimpleChanges,
@@ -19,10 +18,9 @@ import { TablePaginationService } from './table-pagination.service';
   selector: 'app-table-pagination',
   templateUrl: './table-pagination.component.html',
   styleUrls: ['./table-pagination.component.scss'],
+  providers: [],
 })
-export class TablePaginationComponent
-  implements OnInit, OnChanges, OnDestroy, OnChanges
-{
+export class TablePaginationComponent implements OnInit, OnChanges {
   @Input() query: DocumentNode;
   @Input() context: object;
 
@@ -38,7 +36,7 @@ export class TablePaginationComponent
   @Output() manageItem = new EventEmitter<string[]>();
   @Output() loadChild = new EventEmitter<boolean>();
 
-  data$: Observable<any>;
+  data$: any;
 
   page: number;
   pages: number;
@@ -56,10 +54,6 @@ export class TablePaginationComponent
   ) {
     this.allowPageItems = [5, 10, 15, 20];
     this.allowActiveFilter = ['ALL', 'ACTIVE', 'INACTIVE'];
-  }
-
-  ngOnDestroy(): void {
-    console.log('DESTRUYÓ');
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -82,6 +76,11 @@ export class TablePaginationComponent
       : 10;
 
     this.route.queryParams.subscribe(async (params) => {
+      // Active status Initialize
+      const statusParams = params.status;
+      if (this.allowActiveFilter.includes(statusParams)) {
+        this.filterActiveValues = statusParams;
+      }
       this.total = this.total || (await this.totalDocumentLoad().toPromise());
 
       // Page
@@ -97,6 +96,15 @@ export class TablePaginationComponent
         this.defaultNavigate();
       }
 
+      // Active status
+      if (
+        statusParams !== undefined &&
+        !this.allowActiveFilter.includes(statusParams)
+      ) {
+        this.defaultNavigate();
+      }
+
+      // Navegation Item Page (Final)
       if (itemsParams) {
         this.itemsPage = itemsParams;
       } else if (this.itemsPage !== this.defaultItemPage) {
@@ -104,7 +112,7 @@ export class TablePaginationComponent
       }
 
       if (this.allowPageItems.includes(this.itemsPage)) {
-        this.loadData();
+        await this.loadData();
       } else {
         this.defaultNavigate();
       }
@@ -112,6 +120,7 @@ export class TablePaginationComponent
   }
 
   defaultNavigate() {
+    this.filterActiveValues = ActiveValues.ACTIVE;
     this.itemsPage = this.defaultItemPage;
     this.router.navigate([]);
   }
@@ -135,8 +144,13 @@ export class TablePaginationComponent
           if (data) {
             this.total = data.info.total;
             this.pages = data.info.pages;
+
             this.loadChild.emit(false);
+
             return data[this.dataList.listKey];
+          } else {
+            this.total = 0;
+            this.loadChild.emit(false);
           }
         })
       );
@@ -166,7 +180,8 @@ export class TablePaginationComponent
       this.router.navigate([]);
     } else {
       this.router.navigate([], {
-        queryParams: { items },
+        queryParams: { items, page: 1 },
+        queryParamsHandling: 'merge',
       });
     }
   }
@@ -178,8 +193,11 @@ export class TablePaginationComponent
     });
   }
 
-  changeActiveFilter(items: string) {
-    console.log('VALUE', items, typeof items);
+  changeActiveStatus(status: string) {
+    this.router.navigate([], {
+      queryParams: { status, page: 1 },
+      queryParamsHandling: 'merge',
+    });
   }
 
   manageAction(action: string, data: any) {
