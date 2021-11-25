@@ -8,11 +8,8 @@ import {
 import { HttpLink } from 'apollo-angular/http';
 import { onError } from 'apollo-link-error';
 import { environment } from 'src/environments/environment';
-import { environment_prod } from 'src/environments/environment.prod';
 
-const uri = isDevMode()
-  ? environment.graphql_api
-  : environment_prod.graphql_api; // <-- add the URL of the GraphQL server here
+const uri = environment.graphql_api; // <-- add the URL of the GraphQL server here
 
 export function createApollo(httpLink: HttpLink): ApolloClientOptions<any> {
   const errorLink = onError(({ graphQLErrors, networkError }) => {
