@@ -36,11 +36,6 @@ export class LoginComponent implements OnInit {
   ngOnDestroy(): void {}
 
   ngOnInit(): void {
-    this.userService
-      .getUsers(2, 1)
-      .subscribe(({ data: { users }, loading, errors }) => {
-        console.log('dsadsaads', users);
-      });
   }
 
   //Add user form actions

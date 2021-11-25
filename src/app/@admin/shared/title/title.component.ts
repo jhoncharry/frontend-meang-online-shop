@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { title } from 'process';
+import { TitleService } from '../../core/services/title.service';
 
 @Component({
   selector: 'app-admin-title',
@@ -6,7 +8,11 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./title.component.scss'],
 })
 export class TitleComponent implements OnInit {
-  constructor() {}
+  title: string;
+
+  constructor(private titleService: TitleService) {
+    this.titleService.title$.subscribe((title: string) => (this.title = title));
+  }
 
   ngOnInit(): void {}
 }

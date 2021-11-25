@@ -56,3 +56,17 @@ export async function alertWithTwoOptions(
     return;
   });
 }
+
+export const loadingData = (title: string, html: string) => {
+  Swal.fire({
+    title,
+    html,
+    didOpen: () => {
+      Swal.showLoading();
+    },
+  });
+};
+
+export const closeAlert = () => {
+  Swal.close();
+};

@@ -67,7 +67,6 @@ export class AuthService extends ApiService {
         if (loginRestricted) {
           localStorage.setItem('v1_leaf', uuidv4());
           const { user } = loginRestricted;
-          console.log('INFOOOO LOGIN', user);
         }
       })
     );

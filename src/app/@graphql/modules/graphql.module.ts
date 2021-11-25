@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { isDevMode, NgModule } from '@angular/core';
 import { APOLLO_OPTIONS } from 'apollo-angular';
 import {
   ApolloClientOptions,
@@ -7,8 +7,12 @@ import {
 } from '@apollo/client/core';
 import { HttpLink } from 'apollo-angular/http';
 import { onError } from 'apollo-link-error';
+import { environment } from 'src/environments/environment';
+import { environment_prod } from 'src/environments/environment.prod';
 
-const uri = 'http://localhost:3000/graphql'; // <-- add the URL of the GraphQL server here
+const uri = isDevMode()
+  ? environment.graphql_api
+  : environment_prod.graphql_api; // <-- add the URL of the GraphQL server here
 
 export function createApollo(httpLink: HttpLink): ApolloClientOptions<any> {
   const errorLink = onError(({ graphQLErrors, networkError }) => {

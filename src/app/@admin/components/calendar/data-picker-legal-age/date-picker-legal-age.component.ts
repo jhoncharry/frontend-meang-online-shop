@@ -52,7 +52,6 @@ export class DatePickerLegalAgeComponent implements OnInit {
   }
 
   selectDateChange() {
-    console.log(this.model);
     this.newDate.emit(this.model);
   }
 }

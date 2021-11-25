@@ -5,6 +5,7 @@ import { SharedModule } from '../shared/shared.module';
 import { PagesComponent } from './pages.component';
 import { UsersModule } from './users/users.module';
 import { GenresModule } from './genres/genres.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 
 @NgModule({
   declarations: [PagesComponent],
@@ -12,6 +13,7 @@ import { GenresModule } from './genres/genres.module';
     CommonModule,
     SharedModule,
     RouterModule,
+    DashboardModule,
     UsersModule,
     GenresModule,
   ],

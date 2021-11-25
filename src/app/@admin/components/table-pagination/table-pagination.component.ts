@@ -201,7 +201,6 @@ export class TablePaginationComponent implements OnInit, OnChanges {
   }
 
   manageAction(action: string, data: any) {
-    console.log('DATA', action, data);
     this.manageItem.emit([action, data]);
   }
 }

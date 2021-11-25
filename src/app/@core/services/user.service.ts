@@ -37,7 +37,6 @@ export class UserService extends ApiService {
 
   // Update user
   update(user: IRegisterForm) {
-    console.log(user);
     return this.set(updateUser, { user, include: false }).pipe(
       first(),
       map((result: any) => result)

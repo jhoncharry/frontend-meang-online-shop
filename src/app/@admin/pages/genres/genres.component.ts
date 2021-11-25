@@ -10,6 +10,8 @@ import { alertWithTwoOptions } from '../../shared/alerts/alerts';
 import { mergeMap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { ActiveValues } from 'src/app/@core/types/user-active';
+import { TitleService } from '../../core/services/title.service';
+import { LABEL } from '../../core/services/constants/title.constants';
 
 @Component({
   selector: 'app-genres',
@@ -52,6 +54,7 @@ export class GenresComponent implements OnInit {
   public updateForm: FormGroup;
 
   constructor(
+    private titleService: TitleService,
     private modalService: NgbModal,
     private genreFormsModal: GenreFormsModal
   ) {
@@ -63,7 +66,9 @@ export class GenresComponent implements OnInit {
   }
 
   // **************************************************** VALUES FROM CHILD ************************************************
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.titleService.updateTitle(LABEL.GENRES);
+  }
 
   async takeAction($event: any) {
     this.action = $event[0];

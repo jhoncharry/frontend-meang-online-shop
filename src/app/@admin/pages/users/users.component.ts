@@ -17,6 +17,8 @@ import { mergeMap } from 'rxjs/operators';
 import { Observable, of, Subscription } from 'rxjs';
 import { formatNumbers, legalDate } from 'src/app/@core/helpers/form.functions';
 import { ActiveValues } from 'src/app/@core/types/user-active';
+import { TitleService } from '../../core/services/title.service';
+import { LABEL } from '../../core/services/constants/title.constants';
 
 @Component({
   selector: 'app-users',
@@ -64,6 +66,7 @@ export class UsersComponent implements OnInit {
   roles: any;
 
   constructor(
+    private titleService: TitleService,
     private modalService: NgbModal,
     private userFormsModal: UserFormsModal
   ) {
@@ -74,7 +77,9 @@ export class UsersComponent implements OnInit {
     this.initializateUserComponentChild();
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.titleService.updateTitle(LABEL.USERS);
+  }
 
   // **************************************************** VALUES FROM CHILD ************************************************
   async takeAction($event: any) {
