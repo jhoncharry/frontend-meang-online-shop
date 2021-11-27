@@ -28,8 +28,10 @@ export class HeaderComponent implements OnInit {
           Swal.fire('Logout', 'Successful Logout', 'success');
           this.router.navigateByUrl('/login');
           return;
+        } else if (errors) {
+          Swal.fire('Logout', 'Something went wrong...', 'error');
+          this.router.navigateByUrl('/login');
         }
-        Swal.fire('Logout', 'Something went wrong...', 'error');
       },
       (error) => {
         Swal.fire('Error', 'Something went wrong... Networking!', 'error');
